@@ -4,7 +4,13 @@
   "description": "Backend For Digital_MRU",
   "main": "server.js",
   "type": "module",
+<<<<<<< HEAD
   
+=======
+  "engines": {
+    "node": "20.x"
+  },
+>>>>>>> 6d02c3694240cd1da553c1b67272fc079cb4bc2c
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node server.js"
