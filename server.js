@@ -17,7 +17,11 @@ app.use(express.json());
 // using this we can access any package from frontend
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://digital-mru-frontend.vercel.app",
+    ],
   })
 );
 
