@@ -6,6 +6,7 @@ import userRouter from "./routes/UserRoute.js";
 import "dotenv/config.js";
 import cartRouter from "./routes/CartRoute.js";
 import orderRouter from "./routes/OrderRoute.js";
+import adminRouter from "./routes/AdminRoute.js";
 
 // app config
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/cart", cartRouter);
 
 app.use("/api/order", orderRouter);
 
+app.use("/api/admin", adminRouter);
 // To Run the express server
 app.listen(port, () => {
   console.log(`Server Started On https://localhost:${port}`); // back ticks are called template literals
