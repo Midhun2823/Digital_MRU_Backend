@@ -19,7 +19,7 @@ const addFood = async(req, res) => {
       des: req.body.des,
       item_time: req.body.item_time,
       available: req.body.available,
-    //   when ever we hit this api in the body we will send this details and we will access in the backend using this fuction(addFood)
+      //   when ever we hit this api in the body we will send this details and we will access in the backend using this fuction(addFood)
     });
     try {
       await food.save();

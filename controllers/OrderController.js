@@ -21,47 +21,47 @@ const placeOrder = async (req, res) => {
     await newOrder.save(); // it will save the order in our database
     // after placing the order we should cler the user cart
     await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
-    
-      // to create stripe payment link were we insert all product data nad currency and unit amount and quantity
-      const line_items = req.body.items.map((item) => ({
-        price_data: {
-          currency: "inr",
-          product_data: {
-            name: item.name,
-          },
-          unit_amount: item.new_price * 100,
-        },
-        quantity: item.quantity,
-      }));
 
-      line_items.push({
-        price_data: {
-          currency: "inr",
-          product_data: {
-            name: "Delivery Charges",
-          },
-          unit_amount: req.body.delivery * 100,
+    // to create stripe payment link were we insert all product data nad currency and unit amount and quantity
+    const line_items = req.body.items.map((item) => ({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: item.name,
         },
-        quantity: 1,
-      });
-      line_items.push({
-        price_data: {
-          currency: "inr",
-          product_data: {
-            name: "Discount",
-          },
-          unit_amount: req.body.discount * 100,
-        },
-        quantity: 1,
-      });
+        unit_amount: item.new_price * 100,
+      },
+      quantity: item.quantity,
+    }));
 
-      const session = await stripe.checkout.sessions.create({
-        line_items: line_items,
-        mode: "payment",
-        success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
-        cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
-      });
-      res.json({ success: true, session_url: session.url });
+    line_items.push({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: "Delivery Charges",
+        },
+        unit_amount: req.body.delivery * 100,
+      },
+      quantity: 1,
+    });
+    line_items.push({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: "Discount",
+        },
+        unit_amount: req.body.discount * 100,
+      },
+      quantity: 1,
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: line_items,
+      mode: "payment",
+      success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
+      cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
+    });
+    res.json({ success: true, session_url: session.url });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
