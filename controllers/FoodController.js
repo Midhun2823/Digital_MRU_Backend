@@ -1,70 +1,80 @@
 import foodModel from "../models/ItemModel.js";
-import fs from 'fs' //prebuild
-
+import fs from "fs"; //prebuild
 
 // add food item (we can add new food items in our database by this)
-const addFood = async(req, res) => {
+const addFood = async (req, res) => {
+  const foods = await foodModel.find({});
+  let id;
+  if (foods.length > 0) {
+    let last_order_array = foods.slice(-1);
+    console.log(last_order_array + " last_order_array");
+    let last_order = last_order_array[0];
+    id = last_order.id + 1;
+  } else {
+    id = 1;
+  }
+  console.log(id + " ID");
+  // create variable to store the name of the Image
+  let image_filename = `${req.file.filename}`; // using this we will soter the uploaded file name in this variable
 
-    // create variable to store the name of the Image 
-    let image_filename = `${req.file.filename}` // using this we will soter the uploaded file name in this variable
+  const food = new foodModel({
+    id: id,
+    foodid: "FoodID-" + id,
+    name: req.body.name,
+    type: req.body.type,
+    stall_name: req.body.stall_name,
+    category: req.body.category,
+    image: image_filename,
+    new_price: req.body.new_price,
+    old_price: req.body.old_price,
+    des: req.body.des,
+    item_time: req.body.item_time,
+    available: req.body.available,
+    //   when ever we hit this api in the body we will send this details and we will access in the backend using this fuction(addFood)
+  });
+  console.log(food + " qwer");
+  try {
+    await food.save();
+    res.json({ success: true, message: "Food Added" }); //if the product is added successfully this will exceute
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" }); //if we get and error while adding the product this will exceute
+  }
+};
 
-    const food = new foodModel({
-      name: req.body.name,
-      type: req.body.type,
-      stall_name: req.body.stall_name,
-      category: req.body.category,
-      image: image_filename,
-      new_price: req.body.new_price,
-      old_price: req.body.old_price,
-      des: req.body.des,
-      item_time: req.body.item_time,
-      available: req.body.available,
-      //   when ever we hit this api in the body we will send this details and we will access in the backend using this fuction(addFood)
-    });
-    try {
-      await food.save();
-      res.json({ success: true, message: "Food Added" }); //if the product is added successfully this will exceute
-    } catch (error) {
-        console.log(error)
-        res.json({success:false, message:"Error"}) //if we get and error while adding the product this will exceute
-    }
-}
-
-// all food List 
+// all food List
 const listFood = async (req, res) => {
-    try {
-        // using foodModel we can fetch all the items 
-        const foods = await foodModel.find({})
-        // foods variable as all the data (items)
-        res.json({success:true, data:foods})
-    } catch (error) {
-        console.log(error)
-        res.json({success:false , message: "Error"})
-    }
-}
+  try {
+    // using foodModel we can fetch all the items
+    const foods = await foodModel.find({});
+    // foods variable as all the data (items)
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
 
 // remove food item
 const removeFood = async (req, res) => {
-    try {
-        const food = await foodModel.findById(req.body.id) //find the foodmodel using the id
-        fs.unlink(`uploads/${food.image}`, ()=>{}) //image deletion from the folder
+  try {
+    const food = await foodModel.findById(req.body.id); //find the foodmodel using the id
+    fs.unlink(`uploads/${food.image}`, () => {}); //image deletion from the folder
 
-        // using we "req.body.id" sholid delete the data from the mongodb database
-        await foodModel.findByIdAndDelete(req.body.id);
-        res.json({success:true,message:"Food Removed"})
-    } catch (error) {
-        console.log(error)
-        res.json({success:false,message:"Error"})
-    }
-}
-
+    // using we "req.body.id" sholid delete the data from the mongodb database
+    await foodModel.findByIdAndDelete(req.body.id);
+    res.json({ success: true, message: "Food Removed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
 
 //pending to modify
 // {
 // const stockFood = async (req, res) => {
 //   try {
 //     const food = await foodModel.findById(req.body.id); //find the foodmodel using the id
-   
 
 //     // using we "req.body.id" sholid delete the data from the mongodb database
 //     await foodModel.findByIdAndUpdate((req.body.id));

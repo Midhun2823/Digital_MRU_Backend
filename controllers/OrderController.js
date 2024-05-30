@@ -8,8 +8,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // by this we have sup
 const placeOrder = async (req, res) => {
   const frontend_url = process.env.FRONTEND_URL;
 
+
+  
+    const orders = await orderModel.find({});
+    let id;
+    if (orders.length > 0) {
+      let last_order_array = orders.slice(-1);
+      console.log(last_order_array + " last_order_array");
+      let last_order = last_order_array[0];
+      id = last_order.id + 1;
+    } else {
+      id = 1;
+    }
+
   try {
     const newOrder = new orderModel({
+      id :id,
+      orderId:"MRU-ID-"+id,
       userId: req.body.userId,
       items: req.body.items,
       amount: req.body.amount,
@@ -88,7 +103,7 @@ const verifyOrder = async (req, res) => {
 const userOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({ userId: req.body.userId }); // userId will come form middleware
-    res.json({ success: true, data: orders });
+    res.json({ success: true, data: orders.reverse() });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
@@ -100,7 +115,7 @@ const listOrders = async (req, res) => {
   // create logic to get all details of user details
   try {
     const orders = await orderModel.find({});
-    res.json({ success: true, data: orders });
+    res.json({ success: true, data: orders.reverse() });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });

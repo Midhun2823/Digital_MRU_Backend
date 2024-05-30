@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
 const foodScheme = new mongoose.Schema({
+  id: {
+    type: Number,
+    required: true,
+  },
+  foodid:{
+    type: String, requried: true
+  },
   name: { type: String, requried: true },
   type: { type: String, requried: true },
   stall_name: { type: String, requried: true },
@@ -13,6 +20,6 @@ const foodScheme = new mongoose.Schema({
   available: { type: Boolean, requried: true },
 });
 
-const foodModel = mongoose.models.food || mongoose.model("food", foodScheme)
+const foodModel = mongoose.models.food || mongoose.model("food", foodScheme);
 
 export default foodModel;

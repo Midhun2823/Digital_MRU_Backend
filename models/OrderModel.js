@@ -11,6 +11,14 @@ const total = `${day}/${month}/${year}, ${hour}:${minute}:${second} ${
 }`;
 console.log(total + " cpnsolaw");
 const orderSchema = new mongoose.Schema({
+  id: {
+    type: Number,
+    required: true,
+  },
+  orderId: {
+    type: String,
+    required: true,
+  },
   userId: { type: String, required: true },
   items: { type: Array, required: true },
   amount: { type: Number, required: true },
@@ -21,7 +29,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: total,
   },
-  ordercanceled: {type : Boolean , default: false}, // when ever we place order this date will be saved with the current date
+  ordercanceled: { type: Boolean, default: false }, // when ever we place order this date will be saved with the current date
   payment: { type: Boolean, default: false },
   discount: { type: Number },
 });
