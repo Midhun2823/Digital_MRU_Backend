@@ -65,7 +65,7 @@ const placeOrder = async (req, res) => {
         product_data: {
           name: "Discount",
         },
-        unit_amount: req.body.discount * 100,
+        unit_amount:  req.body.discount * 100,
       },
       quantity: 1,
     });
